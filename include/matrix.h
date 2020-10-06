@@ -14,11 +14,11 @@ typedef struct {
     int *m_matrix;
 } Matrix;
 
-Matrix *matrixAlloc();
+Matrix *matrixAlloc(size_t row, size_t col);
 void matrixFree(Matrix *matrix);
 void matrixPrintf(Matrix *matrix);
-void matrixFillOut(Matrix *matrix);
+int matrixFillOut(Matrix *matrix);
 void matrixSort(Matrix *matrix);
-void matrixSwapCol(Matrix *matrix);
+void matrixSwapCol(Matrix *matrix, size_t one, size_t two);
 
 #endif //TP_HOMEWORK2020_MATRIX_H
