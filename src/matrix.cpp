@@ -16,6 +16,7 @@ Matrix *matrixAlloc(size_t row, size_t col) {
     matrix->m_col = col;
     matrix->m_matrix = (int *) malloc(sizeof(int) * row * col);
     if (!matrix->m_matrix) {
+        free(matrix);
         return NULL; //  Обработка ошибки
     }
 

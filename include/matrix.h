@@ -16,8 +16,10 @@ typedef struct {
 
 Matrix *matrixAlloc(size_t row, size_t col);
 void matrixFree(Matrix *matrix);
-void matrixPrintf(Matrix *matrix);
+
 int matrixFillOut(Matrix *matrix);
+void matrixPrintf(Matrix *matrix);
+
 void matrixSort(Matrix *matrix);
 void matrixSwapCol(Matrix *matrix, size_t one, size_t two);
 
