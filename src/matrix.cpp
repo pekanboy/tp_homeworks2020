@@ -4,9 +4,13 @@
 
 #include <malloc.h>
 #include <stdio.h>
-#include "../include/matrix.h"
+#include "../include/matrix.hpp"
 
-Matrix *matrixAlloc(size_t row, size_t col) {
+Matrix *matrixAlloc(int row, int col) {
+    if (row <= 0 || col <= 0) {
+        return NULL;
+    }
+
     Matrix *matrix = (Matrix *) malloc(sizeof(Matrix));
     if (!matrix) {
         return NULL; //  Обработка ошибки
@@ -28,25 +32,24 @@ void matrixFree(Matrix *matrix) {
     free(matrix);
 }
 
-void matrixPrintf(Matrix *matrix) {
+void matrixPrintf(Matrix *matrix, FILE *file) {
     size_t length = matrix->m_col * matrix->m_row;
 
     for (size_t counter = 0; counter < length; ++counter) {
         if (counter % matrix->m_col == 0) {
-            putchar('\n');
+            fputc('\n', file);
         }
 
-        printf("%5d", matrix->m_matrix[counter]);
+        fprintf(file, "%5d", matrix->m_matrix[counter]);
     }
 
 }
 
-int matrixFillOut(Matrix *matrix) {
+int matrixFillOut(Matrix *matrix, FILE *file) {
     size_t length = matrix->m_col * matrix->m_row;
 
-    printf("enter the content of the matrix: ");
     for (size_t counter = 0; counter < length; ++counter) {
-        if (scanf("%d", &matrix->m_matrix[counter]) != 1) {
+        if (fscanf(file, "%d", &matrix->m_matrix[counter]) != 1) {
             return 1;
         }
     }

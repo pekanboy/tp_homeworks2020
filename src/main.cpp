@@ -5,14 +5,14 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/matrix.h"
+#include "../include/matrix.hpp"
 
 int main(int argc, char **argv) {
     size_t row;
     size_t col;
 
-    printf("enter the size of the matrix(row col): ");
-    if (scanf("%zd %zd", &row, &col) != 2) {
+    fprintf(stdout, "enter the size of the matrix(row col): ");
+    if (fscanf(stdin, "%zd %zd", &row, &col) != 2) {
         exit(2);
     }
     if (row == 0 || col == 0) {
@@ -24,13 +24,13 @@ int main(int argc, char **argv) {
         exit(13);
     }
 
-    if (matrixFillOut(matrix) != 0) {
+    fprintf(stdout, "enter the content of the matrix: ");
+    if (matrixFillOut(matrix, stdin) != 0) {
         exit(2);
     }
-    matrixPrintf(matrix);
 
     matrixSort(matrix);
-    matrixPrintf(matrix);
+    matrixPrintf(matrix, stdout);
 
     matrixFree(matrix);
 
