@@ -12,10 +12,13 @@ compiler:
   - clang
 
 before_install:
+  - sudo apt-get install cppcheck
+  - sudo apt-get install libgtest-dev
   - sudo apt-get install valgrind
 
 script:
   # скрипт сборки и тестирования проекта:
+  - cppcheck project
   - mkdir build
   - cd build
   - cmake ..
