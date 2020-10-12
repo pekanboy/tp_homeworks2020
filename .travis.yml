@@ -15,10 +15,13 @@ before_install:
   - sudo apt-get install cppcheck
   - sudo apt-get install libgtest-dev
   - sudo apt-get install valgrind
+  - pip3 install cpplint
 
 script:
   # скрипт сборки и тестирования проекта:
   - cppcheck project
+  - cpplint ./project/src/*.c
+  - cpplint ./project/include/*.h
   - mkdir build
   - cd build
   - cmake ..
