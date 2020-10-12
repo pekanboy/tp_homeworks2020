@@ -14,7 +14,7 @@ TEST(Matrix, Alloc) {
 }
 
 TEST(Matrix, Fill) {
-    const char *name = "../../gtest/filetest/test.txt";
+    const char *name = "../../gtest/testFile/test.txt";
     FILE *file = fopen(name, "r");
     ASSERT_FALSE(file == NULL) << "no open file";
 
