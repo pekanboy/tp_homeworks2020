@@ -4,7 +4,7 @@
 
 #include <malloc.h>
 #include <stdio.h>
-#include "../include/matrix.hpp"
+#include "matrix.h"
 
 Matrix *matrixAlloc(int row, int col) {
     if (row <= 0 || col <= 0) {

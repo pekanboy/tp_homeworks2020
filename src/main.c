@@ -5,7 +5,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/matrix.hpp"
+#include "matrix.h"
 
 int main(int argc, char **argv) {
     size_t row;

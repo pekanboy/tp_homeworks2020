@@ -3,7 +3,9 @@
 //
 
 #include "gtest/gtest.h"
-#include "../include/matrix.hpp"
+extern "C" {
+    #include "matrix.h"
+}
 
 TEST(Matrix, Alloc) {
     Matrix *matrix = matrixAlloc(3, -1);
@@ -12,7 +14,7 @@ TEST(Matrix, Alloc) {
 }
 
 TEST(Matrix, Fill) {
-    const char *name = "../../gtest/testFile/test.txt";
+    const char *name = "../../gtest/filetest/test.txt";
     FILE *file = fopen(name, "r");
     ASSERT_FALSE(file == NULL) << "no open file";
 
