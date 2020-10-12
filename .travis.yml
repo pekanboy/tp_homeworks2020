@@ -19,7 +19,7 @@ before_install:
 
 script:
   # скрипт сборки и тестирования проекта:
-  - cppcheck project
+  - cppcheck --error-exitcode=1 project
   - cpplint ./project/src/*.c
   - cpplint ./project/include/*.h
   - mkdir build
@@ -28,7 +28,7 @@ script:
   - make
   - cd gtest
   - ./Google_Tests_run
-  - valgrind --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no ./Google_Tests_run
+  - valgrind --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no --error-exitcode=1 ./Google_Tests_run
 
 deploy:
   # выкладываем tagged-коммиты на GitHub Releases:

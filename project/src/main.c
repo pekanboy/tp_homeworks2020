@@ -1,11 +1,10 @@
-//
-// Created by egoro on 07.10.2020.
-//
+// "Copyright [2020] <Aleksey Egorov>"
 
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "matrix.h"
+
+#include "./matrix.h"
 
 int main(int argc, char **argv) {
     size_t row;
