@@ -44,6 +44,7 @@ TEST(Matrix, Fill) {
 
 TEST(Matrix, Sort) {
     Matrix *matrix = matrixAlloc(2, 2);
+    ASSERT_FALSE(matrix == NULL);
     size_t length = matrix->m_col * matrix->m_row;
 
     for (size_t counter = 0; counter < length; ++counter) {
@@ -57,7 +58,7 @@ TEST(Matrix, Sort) {
     EXPECT_EQ(matrix->m_matrix[2], 1);
     EXPECT_EQ(matrix->m_matrix[3], 2);
 
-    free(matrix);
+    matrixFree(matrix);
 }
 
 int main(int argc, char **argv) {
