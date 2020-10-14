@@ -4,17 +4,24 @@
 
 #include "gtest/gtest.h"
 extern "C" {
-    #include "matrix.h"
+    #include "./matrix.h"
 }
 
-TEST(Matrix, Alloc) {
+TEST(MatrixTEST1, Alloc1) {
     Matrix *matrix = matrixAlloc(3, -1);
 
     EXPECT_EQ(matrix, nullptr) << "bad alloc in 'matrixAlloc' function";
 }
 
-TEST(Matrix, Fill) {
+TEST(MatrixTEST1, Alloc2) {
+    Matrix *matrix = matrixAlloc(1111111111, 1111111111);
+
+    EXPECT_EQ(matrix, nullptr) << "bad alloc in 'matrixAlloc' function";
+}
+
+TEST(MatrixTEST2, FillOut1) {
     const char *name = "../../gtest/testFile/test.txt";
+
     FILE *file = fopen(name, "r");
     ASSERT_FALSE(file == NULL) << "no open file";
 
@@ -37,12 +44,70 @@ TEST(Matrix, Fill) {
     EXPECT_EQ(matrix->m_matrix[7], 32);
     EXPECT_EQ(matrix->m_matrix[8], 0);
 
-    matrixFree(matrix);
     fclose(file);
+    matrixFree(matrix);
 
 }
 
-TEST(Matrix, Sort) {
+TEST(MatrixTEST2, FillOut2) {
+    const char *name = "../../gtest/testFile/test2.txt";
+
+    FILE *file = fopen(name, "r");
+    ASSERT_FALSE(file == NULL) << "no open file";
+
+    size_t row, col;
+
+    int res = fscanf(file, "%zu %zu", &row, &col);
+    ASSERT_FALSE(res != 2) << "invalid fscanf";
+    Matrix *matrix = matrixAlloc(row, col);
+    ASSERT_FALSE(matrix == NULL) << "invalid malloc";
+
+    EXPECT_EQ(matrixFillOut(matrix, file), 1);
+
+
+    fclose(file);
+    matrixFree(matrix);
+
+}
+
+TEST(MatrixTEST4, Printf) {
+    const char *name = "../../gtest/testFile/test.txt";
+
+    FILE *file = fopen(name, "r");
+    ASSERT_FALSE(file == NULL) << "no open file";
+
+    size_t row, col;
+
+    int res = fscanf(file, "%zu %zu", &row, &col);
+    ASSERT_FALSE(res != 2) << "invalid fscanf";
+    Matrix *matrix = matrixAlloc(row, col);
+    ASSERT_FALSE(matrix == NULL) << "invalid malloc";
+
+    matrixFillOut(matrix, file);
+
+    fclose(file);
+
+    FILE *f = fopen("no.txt", "wr");
+
+    matrixPrintf(matrix, f);
+
+    matrixFillOut(matrix, f);
+
+    EXPECT_EQ(matrix->m_matrix[0], 1);
+    EXPECT_EQ(matrix->m_matrix[1], 232);
+    EXPECT_EQ(matrix->m_matrix[2], 4);
+    EXPECT_EQ(matrix->m_matrix[3], 23);
+    EXPECT_EQ(matrix->m_matrix[4], -1);
+    EXPECT_EQ(matrix->m_matrix[5], 23);
+    EXPECT_EQ(matrix->m_matrix[6], -99);
+    EXPECT_EQ(matrix->m_matrix[7], 32);
+    EXPECT_EQ(matrix->m_matrix[8], 0);
+
+    matrixFree(matrix);
+    fclose(f);
+}
+
+TEST(MatrixTEST3, Sort) {
     Matrix *matrix = matrixAlloc(2, 2);
     ASSERT_FALSE(matrix == NULL);
     size_t length = matrix->m_col * matrix->m_row;

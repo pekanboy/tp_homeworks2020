@@ -1,7 +1,7 @@
 dist:     focal
 sudo:     required  # используем Virtual Machine (а не Docker container)
 
-language: cpp       # на практике разницы между специфичным для C++ окружением
+language: c       # на практике разницы между специфичным для C++ окружением
 # и, скажем, python -- никакой. Но пусть будет cpp.
 
 os:
@@ -16,6 +16,8 @@ before_install:
   - sudo apt-get install libgtest-dev
   - sudo apt-get install valgrind
   - pip3 install cpplint
+  - pip3 install gcovr
+  - sudo apt install gcovr
 
 script:
   # скрипт сборки и тестирования проекта:
@@ -29,6 +31,9 @@ script:
   - cd gtest
   - ./Google_Tests_run
   - valgrind --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no --error-exitcode=1 ./Google_Tests_run
+  - cd ..
+  - cd ..
+  - gcovr
 
 deploy:
   # выкладываем tagged-коммиты на GitHub Releases:
