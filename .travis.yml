@@ -1,0 +1,49 @@
+dist:     focal
+sudo:     required  # используем Virtual Machine (а не Docker container)
+
+language: c       # на практике разницы между специфичным для C++ окружением
+# и, скажем, python -- никакой. Но пусть будет cpp.
+
+os:
+  - linux
+
+compiler:
+  - gcc
+  - clang
+
+before_install:
+  - sudo apt-get install cppcheck
+  - sudo apt-get install libgtest-dev
+  - sudo apt-get install valgrind
+  - pip3 install cpplint
+  - pip3 install gcovr
+  - sudo apt install gcovr
+
+script:
+  # скрипт сборки и тестирования проекта:
+  - cppcheck --error-exitcode=1 project
+  - cpplint ./project/src/*.c
+  - cpplint ./project/include/*.h
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make
+  - cd gtest
+  - ./Google_Tests_run
+  - valgrind --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no --error-exitcode=1 ./Google_Tests_run
+  - cd ..
+  - cd ..
+  - gcovr
+
+deploy:
+  # выкладываем tagged-коммиты на GitHub Releases:
+  provider:     releases
+  file:         <package-file>
+  skip_cleanup: true
+  overwrite:    true
+
+  api_key:
+    secure:   <encrypted-github-token>
+
+  on:
+    tags:     true
