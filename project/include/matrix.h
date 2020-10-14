@@ -5,6 +5,8 @@
 
 #include <stddef.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <assert.h>
 
 typedef struct {
     size_t m_row;
@@ -13,13 +15,16 @@ typedef struct {
     int *m_matrix;
 } Matrix;
 
-Matrix *matrixAlloc(int row, int col);
-void matrixFree(Matrix *matrix);
+Matrix *matrix_Alloc(size_t row, size_t col);
+void matrix_Free(Matrix *matrix);
 
-int matrixFillOut(Matrix *matrix, FILE *file);
-void matrixPrintf(Matrix *matrix, FILE *file);
+bool matrix_Fill_Out(const Matrix *matrix, FILE *file);
+void matrix_Printf(const Matrix *matrix, FILE *file);
 
-void matrixSort(Matrix *matrix);
-void matrixSwapCol(Matrix *matrix, size_t one, size_t two);
+void matrix_Sort(const Matrix *matrix);
+void matrix_Swap_Col(const Matrix *matrix, size_t left, size_t right);
+
+int get_Value(const Matrix *matrix, size_t row, size_t col);
+void set_Value(const Matrix *matrix, size_t row, size_t col, int value);
 
 #endif  // PROJECT_INCLUDE_MATRIX_H_

@@ -10,7 +10,7 @@ add_link_options("--coverage")
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
-include_directories(project/include)
+include_directories(project)
 
 add_subdirectory(project)
 add_subdirectory(gtest)

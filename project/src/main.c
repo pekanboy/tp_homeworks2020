@@ -4,34 +4,53 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "./matrix.h"
+#include "include/matrix.h"
+#include "include/main.h"
 
-int main() {
-    size_t row;
-    size_t col;
+int main(int argc, char **argv) {
+    FILE *file_In = NULL;
+    FILE *file_Out = NULL;
 
-    fprintf(stdout, "enter the size of the matrix(row col): ");
-    if (fscanf(stdin, "%zd %zd", &row, &col) != 2) {
-        exit(2);
+    if (argc > 2) {
+        file_In = fopen(argv[1], "r");
+        file_Out = fopen(argv[2], "w");
+    } else {
+        file_In = stdin;
+        file_Out = stdout;
     }
-    if (row == 0 || col == 0) {
-        exit(2);
+
+    if (!file_In || !file_Out) {
+        printf("Error: could not open files: %s %s", argv[1], argv[2]);
+        return NOT_OPEN_FILE;
+    }
+    size_t row = 0;
+    size_t col = 0;
+
+    if (fscanf(file_In, "%zd %zd", &row, &col) != 2) {
+        printf("Error: Invalid input size.\n");
+        return BAD_INPUT;
     }
 
-    Matrix *matrix = matrixAlloc(row, col);
+    Matrix *matrix = matrix_Alloc(row, col);
     if (matrix == NULL) {
-        exit(13);
+        printf("Error: Bad memory allocation.\n");
+        return BAD_ALLOC;
     }
 
-    fprintf(stdout, "enter the content of the matrix: ");
-    if (matrixFillOut(matrix, stdin) != 0) {
-        exit(2);
+    if (!matrix_Fill_Out(matrix, file_In)) {
+        printf("Error: Incorrect filling.\n");
+        return BAD_INPUT;
     }
 
-    matrixSort(matrix);
-    matrixPrintf(matrix, stdout);
+    matrix_Sort(matrix);
+    matrix_Printf(matrix, file_Out);
 
-    matrixFree(matrix);
+    matrix_Free(matrix);
+
+    if (argc > 2) {
+        fclose(file_Out);
+        fclose(file_In);
+    }
 
     return 0;
 }
