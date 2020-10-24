@@ -1,14 +1,14 @@
-#include <stdio.h>
-#include <stdlib.h>
-//#include <time.h>
+#include "matrix.h"
+#include "matrix_op.h"
 
-typedef struct {
-    u_int8_t value1 : 2;
-    u_int8_t value2 : 2;
-    u_int8_t value3 : 2;
-    u_int8_t value4 : 2;
-} Bit;
+int main(int argc, char **argv) {
+    const char *file_name = "../../text.txt";
 
-int main() {
+    lover_tria_matrix *mat_ptr = create_matrix_from_file(file_name);
+    print_matrix(mat_ptr);
 
+    printf("\n%llu\n", sum_end_elem(mat_ptr));
+    printf("\n%llu\n", sum_end_elem_rows(mat_ptr));
+
+    free_matrix(mat_ptr);
 }
