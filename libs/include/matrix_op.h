@@ -1,5 +1,7 @@
-#ifndef TP_HOMEWORK2020_MATRIX_OP_H
-#define TP_HOMEWORK2020_MATRIX_OP_H
+// "Copyright [2020] <Aleksey Egorov>"
+
+#ifndef LIBS_INCLUDE_MATRIX_OP_H_
+#define LIBS_INCLUDE_MATRIX_OP_H_
 
 #include "matrix.h"
 #include <pthread.h>
@@ -26,7 +28,7 @@ void free_pthread_t_array(pthread_t_arr *arr_ptr);
 worker_attr_arr *create_worker_attr_arr(size_t size);
 void free_worker_attr_array(worker_attr_arr *arr_ptr);
 
-unsigned long long sum_end_elem_rows(const lover_tria_matrix *mat_ptr);
+int sum_parallel(const lover_tria_matrix *mat_ptr);
 void *thread_worker(void *void_attr_ptr);
 int join_child_threads(const pthread_t child_threads[], size_t n_child_threads);
 int set_workers_attr(worker_attr w_attr[],
@@ -34,4 +36,4 @@ int set_workers_attr(worker_attr w_attr[],
                      const lover_tria_matrix *mat_ptr,
                      size_t n_child_threads);
 
-#endif //TP_HOMEWORK2020_MATRIX_OP_H
+#endif  // LIBS_INCLUDE_MATRIX_OP_H_

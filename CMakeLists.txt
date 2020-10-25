@@ -1,17 +1,18 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.16.3)
 project(tp_homework2020 C)
 
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD 14)
-
+set(CMAKE_CXX_STANDARD 17)
+SET(GCC_COVERAGE_COMPILE_FLAGS "--coverage ")
 set(CMAKE_C_FLAGS "-pthread  -fopenmp")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror -Wpedantic")
 set(CMAKE_CXX_FLAGS "-pthread")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Werror -Wpedantic")
+
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
-include_directories(project)
+include_directories(libs/include)
 
-add_subdirectory(project)
+add_subdirectory(libs)
 add_subdirectory(test)

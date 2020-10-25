@@ -1,24 +1,27 @@
+// "Copyright [2020] <Aleksey Egorov>"
+
 #include <math.h>
 #include "matrix.h"
+#include "define_file.h"
 
 lover_tria_matrix *create_matrix(size_t rows, size_t cols) {
     if (rows == 0 || cols == 0 || rows != cols) {
-        return NULL;  // Error
+        return ERROR_MEMORY_ALLOC;  // Error
     }
 
     lover_tria_matrix *mat_ptr = calloc(1, sizeof(lover_tria_matrix));
-    if (mat_ptr == NULL) {
-        return NULL;  // Error
+    if (!mat_ptr) {
+        return ERROR_MEMORY_ALLOC;  // Error
     }
 
     mat_ptr->dir = rows;
-    mat_ptr->size = (1 + rows) * rows / 2;
+    mat_ptr->size = (1 + rows)* rows / 2;
 
-    mat_ptr->data = calloc((size_t)round((double)((double)(1 + mat_ptr->size) * mat_ptr->size / (2 * 4))),
-                           sizeof(byte));  // Костыль
-    if (mat_ptr->data == NULL) {
+    mat_ptr->data = calloc((size_t)round((double)mat_ptr->size / 4),
+                           sizeof(byte));
+    if (!mat_ptr->data) {
         free(mat_ptr);
-        return NULL;  // Error
+        return ERROR_MEMORY_ALLOC;  // Error
     }
 
     return mat_ptr;
@@ -26,21 +29,21 @@ lover_tria_matrix *create_matrix(size_t rows, size_t cols) {
 
 lover_tria_matrix *create_matrix_from_file(const char *file_name) {
     FILE *fp = fopen(file_name, "r");
-    if (fp == NULL) {
-        return NULL;  // Error
+    if (!fp) {
+        return ERROR_CREATE_FROM_FILE;  // Error
     }
 
     size_t rows = 0;
     size_t cols = 0;
     if (fscanf(fp, "%zu %zu", &rows, &cols) != 2) {
         fclose(fp);
-        return NULL;  // Error
+        return ERROR_CREATE_FROM_FILE;  // Error
     }
 
     lover_tria_matrix *mat_ptr = create_matrix(rows, cols);
-    if (mat_ptr == NULL) {
+    if (!mat_ptr) {
         fclose(fp);
-        return NULL;  // Error
+        return ERROR_MEMORY_ALLOC;  // Error
     }
 
     for (size_t i = 0; i < mat_ptr->size; ++i) {
@@ -50,12 +53,12 @@ lover_tria_matrix *create_matrix_from_file(const char *file_name) {
                 t > 3) {
             free_matrix(mat_ptr);
             fclose(fp);
-            return NULL;  // Error
+            return ERROR_CREATE_FROM_FILE;  // Error
         }
-        if(!set_elem(mat_ptr, i, t)) {
+        if (!set_elem(mat_ptr, i, t)) {
             free_matrix(mat_ptr);
             fclose(fp);
-            return NULL;  // Error
+            return ERROR_CREATE_FROM_FILE;  // Error
         }
     }
 
@@ -72,8 +75,8 @@ void free_matrix(lover_tria_matrix *mat_ptr) {
 }
 
 int set_elem(lover_tria_matrix *mat_ptr, size_t pos, unsigned elem) {
-    if (mat_ptr == NULL) {
-        return 0;  // Error
+    if (!mat_ptr) {
+        return ERROR_ARG_FROM_FUNC;
     }
 
     size_t sw = pos / 4;
@@ -100,8 +103,8 @@ int set_elem(lover_tria_matrix *mat_ptr, size_t pos, unsigned elem) {
 }
 
 int get_elem(lover_tria_matrix const *mat_ptr, size_t pos) {
-    if (mat_ptr == NULL) {
-        return -1;  // Error
+    if (!mat_ptr) {
+        return ERROR_ARG_FROM_FUNC;  // Error
     }
 
     size_t sw = pos / 4;
@@ -120,54 +123,29 @@ int get_elem(lover_tria_matrix const *mat_ptr, size_t pos) {
         }
     }
 
-    return 0;
+    return ERROR_ARG_FROM_FUNC;
 }
 
 
-unsigned long long sum_end_elem(const lover_tria_matrix *mat_ptr) {
-    if (mat_ptr == NULL) {
-        return -1;
+int sum_sequential(const lover_tria_matrix *mat_ptr) {
+    if (!mat_ptr) {
+        return ERROR_ARG_FROM_FUNC;
     }
 
     size_t counter = 0;
     size_t t = 1;
-    unsigned long long sum = 0;
+    int sum = 0;
 
-    for (size_t i = 0; i < mat_ptr->dir; ++i) {
-        int res = get_elem(mat_ptr, counter);
-        if (res == -1) {
-            return -1;
+    for (size_t i = 0; i < mat_ptr->size; ++i) {
+        if (i == counter) {
+            int res = get_elem(mat_ptr, counter);
+            if (res == ERROR_ARG_FROM_FUNC) {
+                return ERROR_ARG_FROM_FUNC;
+            }
+            counter += ++t;
+            sum += res;
         }
-
-        counter += ++t;
-        sum += res;
     }
 
     return sum;
-}
-
-int print_matrix(const lover_tria_matrix *mat_ptr) {
-    if (mat_ptr == NULL) {
-        return -1;
-    }
-
-    size_t counter = 0;
-    size_t t = 1;
-
-    for (size_t i = 0; i < mat_ptr->size; ++i) {
-        int res = get_elem(mat_ptr, i);
-        if (res == -1) {
-            return -1;
-        }
-
-        if (counter == i) {
-            counter += t;
-            ++t;
-            printf("\n");
-        }
-
-        printf("%d ", res);
-    }
-
-    return 0;
 }

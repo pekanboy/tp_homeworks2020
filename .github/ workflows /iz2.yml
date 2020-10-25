@@ -1,0 +1,58 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Tests
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the main branch
+on: [push]
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  tests:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-20.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Runs a single command using the runners shell
+      - name: install libs
+        run: |
+          sudo apt install cmake
+          sudo apt-get install libgtest-dev
+          sudo apt-get install valgrind
+          sudo apt-get install cppcheck
+          sudo apt install python3-pip
+          pip3 install gcovr
+          sudo apt install gcovr
+      # Runs a set of commands using the runners shell
+      - name: build
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make
+      - name: CPP(lint-check)
+        run: |
+          cppcheck --error-exitcode=1 ./libs/src/*.c
+          cppcheck --error-exitcode=1 ./libs/include/*.c
+          cpplint --filter=-build/include ./libs/include/*.h
+          cpplint --filter=-build/include,-readability/casting ./libs/src/*.c
+      - name: gtests
+        run: |
+          cd build/test/gen_matrix
+          ./gen_matrix SmallData.txt 100 100
+          ./gen_matrix BigData.txt 10000 10000
+          cd ..
+          ./tests_run
+      - name: valgrind
+        run: |
+          cd build/test
+          valgrind --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no --error-exitcode=1  ./tests_run
+      - name: gcovr
+        run:
+          gcovr
