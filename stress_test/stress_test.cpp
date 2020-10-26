@@ -5,7 +5,7 @@ extern "C" {
 }
 
 TEST(Stress_test, SmallData) {
-    lover_tria_matrix *mat_ptr = create_matrix_from_file("../gen_matrix/SmallData.txt");
+    lover_tria_matrix *mat_ptr = create_matrix_from_file("../test/gen_matrix/SmallData.txt");
     ASSERT_FALSE(!mat_ptr);
 
     EXPECT_EQ(sum_parallel(mat_ptr), sum_sequential(mat_ptr));
@@ -13,7 +13,7 @@ TEST(Stress_test, SmallData) {
 }
 
 TEST(Stress_test, BigData) {
-    lover_tria_matrix *mat_ptr = create_matrix_from_file("../gen_matrix/BigData.txt");
+    lover_tria_matrix *mat_ptr = create_matrix_from_file("../test/gen_matrix/BigData.txt");
     ASSERT_FALSE(!mat_ptr);
 
     EXPECT_EQ(sum_parallel(mat_ptr), sum_sequential(mat_ptr));
