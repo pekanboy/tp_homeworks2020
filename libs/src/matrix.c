@@ -1,8 +1,9 @@
 // "Copyright [2020] <Aleksey Egorov>"
 
+#include "define_file.h"
 #include <math.h>
 #include "matrix.h"
-#include "define_file.h"
+
 
 lover_tria_matrix *create_matrix(size_t rows, size_t cols) {
     if (rows == 0 || cols == 0 || rows != cols) {
@@ -122,10 +123,7 @@ int get_elem(lover_tria_matrix const *mat_ptr, size_t pos) {
             return mat_ptr->data[sw].value4;
         }
     }
-
-    return ERROR_ARG_FROM_FUNC;
 }
-
 
 int sum_sequential(const lover_tria_matrix *mat_ptr) {
     if (!mat_ptr) {

@@ -1,12 +1,11 @@
 // "Copyright [2020] <Aleksey Egorov>"
 
-#include <math.h>
-#include <pthread.h>
-#include <unistd.h>
-
 #include "define_file.h"
+#include <math.h>
 #include "matrix.h"
 #include "matrix_op.h"
+#include <pthread.h>
+#include <unistd.h>
 
 pthread_mutex_t sums_lock;
 

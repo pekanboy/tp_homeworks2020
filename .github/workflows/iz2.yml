@@ -29,6 +29,7 @@ jobs:
           sudo apt install python3-pip
           pip3 install gcovr
           sudo apt install gcovr
+          pip3 install cpplint
       # Runs a set of commands using the runners shell
       - name: build
         run: |
@@ -39,14 +40,14 @@ jobs:
       - name: CPP(lint-check)
         run: |
           cppcheck --error-exitcode=1 ./libs/src/*.c
-          cppcheck --error-exitcode=1 ./libs/include/*.c
-          cpplint --filter=-build/include ./libs/include/*.h
-          cpplint --filter=-build/include,-readability/casting ./libs/src/*.c
+          cppcheck --error-exitcode=1 ./libs/include/*.h
+          /home/runner/.local/bin/cpplint --filter=-build/include ./libs/include/*.h
+          /home/runner/.local/bin/cpplint --filter=-build/include,-readability/casting ./libs/src/*.c
       - name: gtests
         run: |
           cd build/test/gen_matrix
           ./gen_matrix SmallData.txt 100 100
-          ./gen_matrix BigData.txt 10000 10000
+          ./gen_matrix BigData.txt 100000 100000
           cd ..
           ./tests_run
       - name: valgrind
@@ -54,5 +55,5 @@ jobs:
           cd build/test
           valgrind --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no --error-exitcode=1  ./tests_run
       - name: gcovr
-        run:
+        run: |
           gcovr
