@@ -5,22 +5,6 @@ extern "C" {
 #include "define_file.h"
 }
 
-TEST(Stress_test, SmallData) {
-    lover_tria_matrix *mat_ptr = create_matrix_from_file("gen_matrix/SmallData.txt");
-    ASSERT_FALSE(!mat_ptr);
-
-    EXPECT_EQ(sum_parallel(mat_ptr), sum_sequential(mat_ptr));
-    free_matrix(mat_ptr);
-}
-
-TEST(Stress_test, BigData) {
-    lover_tria_matrix *mat_ptr = create_matrix_from_file("gen_matrix/BigData.txt");
-    ASSERT_FALSE(!mat_ptr);
-
-    EXPECT_EQ(sum_parallel(mat_ptr), sum_sequential(mat_ptr));
-    free_matrix(mat_ptr);
-}
-
 TEST(Matrix, Create) {
     lover_tria_matrix *mat_ptr = create_matrix(0, 2);
     EXPECT_EQ(mat_ptr, nullptr);
