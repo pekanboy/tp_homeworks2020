@@ -18,3 +18,4 @@ include_directories(libs/include)
 
 add_subdirectory(libs)
 add_subdirectory(test)
+add_subdirectory(stress_test)

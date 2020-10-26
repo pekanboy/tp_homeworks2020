@@ -50,7 +50,7 @@ jobs:
           ./gen_matrix BigData.txt 100000 100000
           cd ..
           ./tests_run
-          cd stress_test
+          cd ../stress_test
           ./stress_tests_run
       - name: valgrind
         run: |
