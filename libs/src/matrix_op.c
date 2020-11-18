@@ -72,7 +72,7 @@ int set_workers_attr(worker_attr w_attr[],
     size_t size = mat_ptr->size / n_child_threads;
 
     for (size_t i = 0; i < n_child_threads; ++i) {
-        w_attr[i].sums_arr_ptr = sum_end_elem + i;  // Для каждого воркера своё число
+        w_attr[i].sums_arr_ptr = sum_end_elem + i;
         w_attr[i].mat_ptr = mat_ptr;
         w_attr[i].begin = i * size;
 
@@ -124,7 +124,9 @@ void *thread_worker(void *void_attr_ptr) {
         return return_stat;
     }
 
-    *attr_ptr->sums_arr_ptr = sum_sequential(attr_ptr->mat_ptr, attr_ptr->begin, attr_ptr->end);
+    *attr_ptr->sums_arr_ptr = sum_sequential(attr_ptr->mat_ptr,
+                                             attr_ptr->begin,
+                                             attr_ptr->end);
 
     *return_stat = EXIT_SUCCESS;
     return return_stat;
