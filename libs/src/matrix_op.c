@@ -124,22 +124,7 @@ void *thread_worker(void *void_attr_ptr) {
         return return_stat;
     }
 
-    size_t begin = attr_ptr->begin;
-    size_t end = attr_ptr->end;
-    const lover_tria_matrix *mat_ptr = attr_ptr->mat_ptr;
-
-    size_t t = (int) (-0.5 + sqrt((double) (0.25 + (double) begin * 2))) + 1;
-    size_t counter = t * (t + 1) / 2;  // Сумма арифметической прогрессии
-
-    do {
-        int res = get_elem(mat_ptr, counter - 1);
-        if (res == ERROR_ARG_FROM_FUNC) {
-            *return_stat = ERROR_ARG_FROM_FUNC;
-        }
-        *attr_ptr->sums_arr_ptr += res;
-
-        counter += ++t;
-    } while (counter <= end);
+    *attr_ptr->sums_arr_ptr = sum_sequential(attr_ptr->mat_ptr, attr_ptr->begin, attr_ptr->end);
 
     *return_stat = EXIT_SUCCESS;
     return return_stat;
@@ -155,7 +140,7 @@ int sum_parallel(const lover_tria_matrix *mat_ptr) {
         return ERROR_THREAD_COUNT;
     }
     size_t n_child_threads = proc_number;
-    int *sum_end_elem =  (int *)calloc(n_child_threads, sizeof(int));
+    int *sum_end_elem = (int *) calloc(n_child_threads, sizeof(int));
     if (!sum_end_elem) {
         return ERROR_CREATE_THREAD;
     }
@@ -202,6 +187,7 @@ int sum_parallel(const lover_tria_matrix *mat_ptr) {
     for (size_t i = 0; i < n_child_threads; ++i) {
         sum += sum_end_elem[i];
     }
+
     free(sum_end_elem);
 
     return sum;

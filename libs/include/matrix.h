@@ -30,6 +30,6 @@ int set_elem(lover_tria_matrix *mat_ptr, size_t pos, unsigned elem);
 // Получаем элемент массива по индексу
 int get_elem(lover_tria_matrix const *mat_ptr, size_t pos);
 // Получаем сумму диагональных элементов
-int sum_sequential(const lover_tria_matrix *mat_ptr);
+int sum_sequential(const lover_tria_matrix *mat_ptr, size_t begin, size_t end);
 
 #endif  // LIBS_INCLUDE_MATRIX_H_

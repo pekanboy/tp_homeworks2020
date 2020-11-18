@@ -20,6 +20,9 @@ TEST(Matrix, CreateFromFile) {
     mat_ptr = create_matrix_from_file("../../test/test_files/ErrorCreate.txt");
     EXPECT_EQ(mat_ptr, nullptr);
 
+    mat_ptr = create_matrix_from_file("../../test/test_files/ErrorRowCol.txt");
+    EXPECT_EQ(mat_ptr, nullptr);
+
     mat_ptr = create_matrix_from_file("../../test/test_files/ErrorData.txt");
     EXPECT_EQ(mat_ptr, nullptr);
 
@@ -29,6 +32,14 @@ TEST(Matrix, CreateFromFile) {
 
 TEST(Matrix, SetElem) {
     EXPECT_EQ(set_elem(nullptr, 1, 1), ERROR_ARG_FROM_FUNC);
+}
+
+TEST(Matrix, GetElem) {
+    EXPECT_EQ(get_elem(nullptr, 1), ERROR_ARG_FROM_FUNC);
+}
+
+TEST(Matrix, SumSequential) {
+    EXPECT_EQ(sum_sequential(nullptr, 1, 2), ERROR_ARG_FROM_FUNC);
 }
 
 TEST(MatrixOp, ErrorsAttr) {
@@ -42,6 +53,14 @@ TEST(MatrixOp, ErrorsAttr) {
     free(res);
 
     EXPECT_EQ(sum_parallel(nullptr), ERROR_ARG_FROM_FUNC);
+}
+
+TEST(MatrixOp, SumParallelSuccess) {
+    lover_tria_matrix *mat_ptr = create_matrix_from_file("../../test/test_files/Success.txt");
+    ASSERT_TRUE(mat_ptr);
+
+    EXPECT_EQ(sum_parallel(mat_ptr), 18);
+    free_matrix(mat_ptr);
 }
 
 int main(int argc, char **argv) {

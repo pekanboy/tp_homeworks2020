@@ -124,24 +124,22 @@ int get_elem(lover_tria_matrix const *mat_ptr, size_t pos) {
     }
 }
 
-int sum_sequential(const lover_tria_matrix *mat_ptr) {
+int sum_sequential(const lover_tria_matrix *mat_ptr, size_t begin, size_t end) {
     if (!mat_ptr) {
         return ERROR_ARG_FROM_FUNC;
     }
 
-    size_t counter = 0;
-    size_t t = 1;
+    size_t t = (int) (-0.5 + sqrt((double) (0.25 + (double) begin * 2))) + 1;
+    size_t counter = t * (t + 1) / 2;  // Сумма арифметической прогрессии
     int sum = 0;
 
-    for (size_t i = 0; i < mat_ptr->size; ++i) {
-        if (i == counter) {
-            int res = get_elem(mat_ptr, counter);
+    while (counter <= end) {
+            int res = get_elem(mat_ptr, counter - 1);
             if (res == ERROR_ARG_FROM_FUNC) {
                 return ERROR_ARG_FROM_FUNC;
             }
             counter += ++t;
             sum += res;
-        }
     }
 
     return sum;
