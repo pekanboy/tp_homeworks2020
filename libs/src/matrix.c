@@ -1,7 +1,8 @@
 // "Copyright [2020] <Aleksey Egorov>"
 
-#include "define_file.h"
 #include <math.h>
+
+#include "define_file.h"
 #include "matrix.h"
 
 
@@ -16,9 +17,9 @@ lover_tria_matrix *create_matrix(size_t rows, size_t cols) {
     }
 
     mat_ptr->dir = rows;
-    mat_ptr->size = (1 + rows)* rows / 2;
+    mat_ptr->size = (1 + rows) * rows / 2;
 
-    mat_ptr->data = calloc((size_t)round((double)mat_ptr->size / 4),
+    mat_ptr->data = calloc((size_t) round((double) mat_ptr->size / 4),
                            sizeof(byte));
     if (!mat_ptr->data) {
         free(mat_ptr);
@@ -49,9 +50,7 @@ lover_tria_matrix *create_matrix_from_file(const char *file_name) {
 
     for (size_t i = 0; i < mat_ptr->size; ++i) {
         unsigned t = 0;
-        if (fscanf(fp, "%u", &t) != 1 ||
-                t < 0 ||
-                t > 3) {
+        if (fscanf(fp, "%u", &t) != 1 || t < 0 || t > 3) {
             free_matrix(mat_ptr);
             fclose(fp);
             return ERROR_CREATE_FROM_FILE;  // Error

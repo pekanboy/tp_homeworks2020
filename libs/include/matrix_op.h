@@ -3,8 +3,9 @@
 #ifndef LIBS_INCLUDE_MATRIX_OP_H_
 #define LIBS_INCLUDE_MATRIX_OP_H_
 
-#include "matrix.h"
 #include <pthread.h>
+
+#include "matrix.h"
 
 typedef struct worker_attr {
     int *sums_arr_ptr;

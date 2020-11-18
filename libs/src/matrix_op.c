@@ -1,11 +1,13 @@
 // "Copyright [2020] <Aleksey Egorov>"
 
-#include "define_file.h"
 #include <math.h>
+#include <pthread.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#include "define_file.h"
 #include "matrix.h"
 #include "matrix_op.h"
-#include <pthread.h>
-#include <unistd.h>
 
 pthread_mutex_t sums_lock;
 
@@ -60,7 +62,7 @@ void free_worker_attr_array(worker_attr_arr *arr_ptr) {
 }
 
 int set_workers_attr(worker_attr w_attr[],
-                     int *sum_end_elem,
+                     int sum_end_elem[],
                      const lover_tria_matrix *mat_ptr,
                      size_t n_child_threads) {
     if (!w_attr || !sum_end_elem || !mat_ptr) {
@@ -69,8 +71,8 @@ int set_workers_attr(worker_attr w_attr[],
 
     size_t size = mat_ptr->size / n_child_threads;
 
-    for (size_t i = 0; i <  n_child_threads; ++i) {
-        w_attr[i].sums_arr_ptr = sum_end_elem;
+    for (size_t i = 0; i < n_child_threads; ++i) {
+        w_attr[i].sums_arr_ptr = sum_end_elem + i;  // Для каждого воркера своё число
         w_attr[i].mat_ptr = mat_ptr;
         w_attr[i].begin = i * size;
 
@@ -116,8 +118,8 @@ void *thread_worker(void *void_attr_ptr) {
     int *return_stat = calloc(1, sizeof(int));
 
     if (attr_ptr == NULL ||
-            attr_ptr->sums_arr_ptr == NULL ||
-            attr_ptr->mat_ptr == NULL) {
+        attr_ptr->sums_arr_ptr == NULL ||
+        attr_ptr->mat_ptr == NULL) {
         *return_stat = ERROR_ARG_FROM_FUNC;
         return return_stat;
     }
@@ -126,12 +128,10 @@ void *thread_worker(void *void_attr_ptr) {
     size_t end = attr_ptr->end;
     const lover_tria_matrix *mat_ptr = attr_ptr->mat_ptr;
 
-    size_t t = (int)(-0.5 + sqrt((double)(0.25 + (double )begin * 2))) + 1;
+    size_t t = (int) (-0.5 + sqrt((double) (0.25 + (double) begin * 2))) + 1;
     size_t counter = t * (t + 1) / 2;  // Сумма арифметической прогрессии
 
-    pthread_mutex_lock(&sums_lock);
-
-    do  {
+    do {
         int res = get_elem(mat_ptr, counter - 1);
         if (res == ERROR_ARG_FROM_FUNC) {
             *return_stat = ERROR_ARG_FROM_FUNC;
@@ -140,8 +140,6 @@ void *thread_worker(void *void_attr_ptr) {
 
         counter += ++t;
     } while (counter <= end);
-
-    pthread_mutex_unlock(&sums_lock);
 
     *return_stat = EXIT_SUCCESS;
     return return_stat;
@@ -157,22 +155,28 @@ int sum_parallel(const lover_tria_matrix *mat_ptr) {
         return ERROR_THREAD_COUNT;
     }
     size_t n_child_threads = proc_number;
-    int sum_end_elem = 0;
+    int *sum_end_elem =  (int *)calloc(n_child_threads, sizeof(int));
+    if (!sum_end_elem) {
+        return ERROR_CREATE_THREAD;
+    }
 
     pthread_t_arr *child_threads = create_pthread_t_arr(n_child_threads);
     if (!child_threads) {
+        free(sum_end_elem);
         return ERROR_CREATE_THREAD;
     }
     worker_attr_arr *w_attr = create_worker_attr_arr(n_child_threads);
     if (!w_attr) {
+        free(sum_end_elem);
         free_pthread_t_array(child_threads);
         return ERROR_CREATE_THREAD;
     }
 
     if (set_workers_attr(w_attr->data,
-                         &sum_end_elem,
+                         sum_end_elem,
                          mat_ptr,
                          n_child_threads) != 0) {
+        free(sum_end_elem);
         free_pthread_t_array(child_threads);
         free_worker_attr_array(w_attr);
         return ERROR_CREATE_THREAD;
@@ -183,15 +187,22 @@ int sum_parallel(const lover_tria_matrix *mat_ptr) {
                            NULL,
                            thread_worker,
                            &w_attr->data[i]) != 0) {
+            free(sum_end_elem);
             join_child_threads(child_threads->data, n_child_threads);
             free_pthread_t_array(child_threads);
             free_worker_attr_array(w_attr);
             return ERROR_CREATE_THREAD;
         }
     }
-        join_child_threads(child_threads->data, n_child_threads);
-        free_pthread_t_array(child_threads);
-        free_worker_attr_array(w_attr);
+    join_child_threads(child_threads->data, n_child_threads);
+    free_pthread_t_array(child_threads);
+    free_worker_attr_array(w_attr);
 
-        return sum_end_elem;
+    int sum = 0;
+    for (size_t i = 0; i < n_child_threads; ++i) {
+        sum += sum_end_elem[i];
     }
+    free(sum_end_elem);
+
+    return sum;
+}
