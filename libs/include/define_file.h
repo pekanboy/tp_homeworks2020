@@ -5,6 +5,7 @@
 
 #define ERROR_MEMORY_ALLOC     NULL
 #define ERROR_CREATE_FROM_FILE NULL
+#define CASH_ERROR             NULL
 
 #define ERROR_ARG_FROM_FUNC    -7
 #define ERROR_THREAD_COUNT     -3

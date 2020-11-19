@@ -59,6 +59,7 @@ TEST(MatrixOp, SumParallelSuccess) {
     lover_tria_matrix *mat_ptr = create_matrix_from_file("../../test/test_files/Success.txt");
     ASSERT_TRUE(mat_ptr);
 
+    std::cout << sum_parallel(mat_ptr) << "\n";
     EXPECT_EQ(sum_parallel(mat_ptr), 18);
     free_matrix(mat_ptr);
 }

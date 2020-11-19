@@ -1,6 +1,8 @@
 // "Copyright [2020] <Aleksey Egorov>"
 
 #include <math.h>
+#include <zconf.h>
+#include <memory.h>
 
 #include "define_file.h"
 #include "matrix.h"
@@ -11,19 +13,22 @@ lover_tria_matrix *create_matrix(size_t rows, size_t cols) {
         return ERROR_MEMORY_ALLOC;  // Error
     }
 
-    lover_tria_matrix *mat_ptr = calloc(1, sizeof(lover_tria_matrix));
-    if (!mat_ptr) {
-        return ERROR_MEMORY_ALLOC;  // Error
+    int64_t l1dcls = sysconf(_SC_LEVEL1_DCACHE_LINESIZE);
+
+    lover_tria_matrix *mat_ptr = NULL;
+    if (posix_memalign((void **) &mat_ptr, l1dcls, sizeof(lover_tria_matrix))) {
+        return CASH_ERROR;
     }
 
     mat_ptr->dir = rows;
     mat_ptr->size = (1 + rows) * rows / 2;
 
-    mat_ptr->data = calloc((size_t) round((double) mat_ptr->size / 4),
-                           sizeof(byte));
-    if (!mat_ptr->data) {
+    mat_ptr->data = NULL;
+    if (posix_memalign((void **) &mat_ptr->data,
+                       l1dcls,
+                       round((double) mat_ptr->size / 4) * sizeof(Byte))) {
         free(mat_ptr);
-        return ERROR_MEMORY_ALLOC;  // Error
+        return CASH_ERROR;
     }
 
     return mat_ptr;
@@ -134,12 +139,12 @@ int sum_sequential(const lover_tria_matrix *mat_ptr, size_t begin, size_t end) {
     int sum = 0;
 
     while (counter <= end) {
-            int res = get_elem(mat_ptr, counter - 1);
-            if (res == ERROR_ARG_FROM_FUNC) {
-                return ERROR_ARG_FROM_FUNC;
-            }
-            counter += ++t;
-            sum += res;
+        int res = get_elem(mat_ptr, counter - 1);
+        if (res == ERROR_ARG_FROM_FUNC) {
+            return ERROR_ARG_FROM_FUNC;
+        }
+        counter += ++t;
+        sum += res;
     }
 
     return sum;
